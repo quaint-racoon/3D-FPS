@@ -124,7 +124,6 @@
         import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
         import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-        // --- 1. CORE SETUP ---
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x87CEEB);
         scene.fog = new THREE.Fog(0x87CEEB, 0, 750);
@@ -134,26 +133,21 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('game-container').appendChild(renderer.domElement);
 
-        // --- 2. RESTORED LIGHTING & ENVIRONMENT ---
-        // (This is what prevents the pitch-black void!)
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
         scene.add(ambientLight);
         const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
         dirLight.position.set(100, 100, 50);
         scene.add(dirLight);
 
-        // Restored Floor
         const floorGeo = new THREE.PlaneGeometry(2000, 2000);
         floorGeo.rotateX(-Math.PI / 2);
-        const floorMat = new THREE.MeshLambertMaterial({ color: 0x228B22 }); // Changed to Lambert to react to light
+        const floorMat = new THREE.MeshLambertMaterial({ color: 0x228B22 }); 
         scene.add(new THREE.Mesh(floorGeo, floorMat));
 
-        // Base Box Material setup (Boxes are placed later by the network)
         const collisionBoxes = [];
         const boxGeo = new THREE.BoxGeometry(20, 30, 20);
         const boxMat = new THREE.MeshLambertMaterial({ color: 0x888888 });
 
-        // --- 3. PLAYER STATE & SAFE SPAWN ---
         const NORMAL_HEIGHT = 15;
         const CROUCH_HEIGHT = 7;
         const MAP_SIZE = 250;
@@ -424,7 +418,6 @@
             if (netConn && netConn.open) netConn.send({ type: 'respawn' });
         });
 
-        // --- 7. GAME LOOP ---
         const velocity = new THREE.Vector3();
         const direction = new THREE.Vector3();
         const clock = new THREE.Clock();
