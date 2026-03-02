@@ -242,14 +242,12 @@
             }
         });
 
-        // --- 4. WEAPONS (.GLB LOADER) ---
         const gltfLoader = new GLTFLoader();
         const weaponGroup = new THREE.Group();
         camera.add(weaponGroup);
         let currentWeaponModel = null;
         let currentDamage = 20;
 
-        // Custom weapon array implemented
         const weapons = [
             { name: "Pistol", filename: "blaster-a.glb", dmg: 20, scale: [0.5, 0.5, 0.5], pos: [0.5, -0.5, -1] },
             { name: "AK-47", filename: "blaster-d.glb", dmg: 15, scale: [1, 1, 1], pos: [0.5, -0.5, -1] },
@@ -259,7 +257,7 @@
         function equipWeapon(index) {
             const w = weapons[index];
             document.getElementById('current-weapon').innerText = w.name;
-            currentDamage = w.dmg; // Fixes the -undefined issue
+            currentDamage = w.dmg; 
             weaponGroup.clear(); 
 
             gltfLoader.load(`models/${w.filename}`, (gltf) => {
@@ -271,7 +269,6 @@
         }
         equipWeapon(0);
 
-        // --- 5. MULTIPLAYER (PEERJS & HOST MAP SYNC) ---
         const urlParams = new URLSearchParams(window.location.search);
         const joinId = urlParams.get('join');
         const peer = new Peer(); 
@@ -284,7 +281,6 @@
         scene.add(enemyMesh);
 
         if (!joinId) {
-            // YOU ARE HOST
             const mapData = [];
             for (let i = 0; i < 60; i++) {
                 const x = Math.floor(Math.random() * 20 - 10) * 30;
@@ -298,7 +294,6 @@
                 collisionBoxes.push(new THREE.Box3().setFromObject(box));
             }
             
-            // Spawn after map is built
             camera.position.copy(getSafeSpawnPosition());
 
             peer.on('open', (id) => {
@@ -327,7 +322,6 @@
             });
 
         } else {
-            // YOU ARE CLIENT
             peer.on('open', () => {
                 document.getElementById('invite-container').innerText = "Connecting to Host...";
                 netConn = peer.connect(joinId);
@@ -348,7 +342,6 @@
                         scene.add(box);
                         collisionBoxes.push(new THREE.Box3().setFromObject(box));
                     });
-                    // Spawn after receiving map
                     camera.position.copy(getSafeSpawnPosition());
                     document.getElementById('invite-container').innerText = "Map loaded! Click to Play.";
                 }
@@ -380,7 +373,6 @@
             });
         }
 
-        // --- 6. SHOOTING & RESPAWN ---
         const raycaster = new THREE.Raycaster();
         const centerScreen = new THREE.Vector2(0, 0);
 
